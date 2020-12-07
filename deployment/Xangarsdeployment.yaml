@@ -1,0 +1,58 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: spicejetfileparser
+  namespace: capiot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spicejetfileparser
+  template:
+    metadata:
+      labels:
+        app: spicejetfileparser
+    spec:
+      containers:
+      - name: spicejetfileparser
+        image: 'spicejetfileparser:123'
+        resources:
+          limits:
+            memory: 1024Mi
+            cpu: 2
+          requests:
+            memory: 64Mi
+            cpu: 100m
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 80
+
+        envFrom:
+        - configMapRef:
+            name: transactionconfig
+
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /heartbeat
+            port: 80
+            scheme: HTTP
+          initialDelaySeconds: 6
+          periodSeconds: 20
+          successThreshold: 1
+          timeoutSeconds: 1
+
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /heartbeat
+            port: 80
+            scheme: HTTP
+          initialDelaySeconds: 6
+          periodSeconds: 20
+          successThreshold: 1
+          timeoutSeconds: 1
+      
+      dnsConfig:
+          nameservers:
+          - 168.63.129.16
