@@ -1,21 +1,21 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: spicejetfileparser
+  name: Insurance
   namespace: capiot
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: spicejetfileparser
+      app: Insurance
   template:
     metadata:
       labels:
-        app: spicejetfileparser
+        app: Insurance
     spec:
       containers:
-      - name: spicejetfileparser
-        image: 'spicejetfileparser:123'
+      - name: Insurance
+        image: 'Insurance:123'
         resources:
           limits:
             memory: 1024Mi

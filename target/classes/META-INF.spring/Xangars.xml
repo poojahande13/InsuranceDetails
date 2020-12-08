@@ -6,9 +6,7 @@
           http://camel.apache.org/schema/spring
           http://camel.apache.org/schema/spring/camel-spring.xsd">
 
-    <bean id="DataMapping" class="com.Xangars.CustomerPolicyInfo" />
-
-    <bean id="LogMessage" class ="com.Xangars.processData"/>
+    <bean id="PolicyInfo" class="com.Xangars.CustomerPolicyInfo" />
 
     <bean id="EmailVerification" class="com.Xangars.EmailValidation"/>
 
@@ -57,8 +55,8 @@
                 <to uri="direct:heartbeat"/>
             </get>
 
-            <post uri="/inputDataMapper">
-                <to uri="direct:inputDataMapper"/>
+            <post uri="/CustomerPolicyInfo">
+                <to uri="direct:CustomerPolicyInfo"/>
             </post>
 
             <post uri ="/Emailverify">
@@ -103,8 +101,8 @@
         </route>
 
         <!-- calling Customer Policy Info API-->
-        <route  id="inputDataMapper" startupOrder="1">
-        <from uri="direct:inputDataMapper"/>
+        <route  id="CustomerPolicyInfo" startupOrder="1">
+        <from uri="direct:CustomerPolicyInfo"/>
             <convertBodyTo type="java.lang.String"/>
             <log loggingLevel="INFO" message="Request Received with input Payload as follows:"/>
             <convertBodyTo type="java.lang.String"/>
@@ -129,7 +127,7 @@
                 <simple>${exchange.getProperty(inputData)}</simple>
             </setBody>
 
-            <process ref="DataMapping"/>
+            <process ref="PolicyInfo"/>
 
             <!--Calling Log API -->
             <convertBodyTo type="java.lang.String"/>
@@ -141,9 +139,7 @@
             <log loggingLevel="INFO" message="After calling Data Mapping Processor, Reached End of Xangars.xml"/>
             <stop/>
         </route>
-
-
-       <!-- calling Email verification API-->
+        <!-- calling Email verification API-->
 
         <route  id="Emailverify" startupOrder="2">
             <from uri="direct:Emailverify"/>
@@ -177,15 +173,10 @@
             <!--Calling Log API -->
             <convertBodyTo type="java.lang.String"/>
 
-
-            <!--<setHeader headerName="CamelHttpResponseCode">
-                <simple>200</simple>
-            </setHeader>-->
             <log loggingLevel="INFO" message="Output Payload,  Body : ${body}, Headers : ${headers}"/>
             <log loggingLevel="INFO" message="After calling Data Mapping Processor, Reached End of Xangars.xml"/>
             <stop/>
         </route>
-
 
         <!-- calling Mobile Number Validation API-->
 
@@ -221,10 +212,6 @@
             <!--Calling Log API -->
             <convertBodyTo type="java.lang.String"/>
 
-            <!--<setHeader headerName="CamelHttpResponseCode">
-               <simple>1005</simple>
-           </setHeader>-->
-
             <log loggingLevel="INFO" message="Output Payload,  Body : ${body}, Headers : ${headers}"/>
             <log loggingLevel="INFO" message="After calling Data Mapping Processor, Reached End of Xangars.xml"/>
             <stop/>
@@ -254,29 +241,11 @@
                 </when>
             </choice>
 
-            <setProperty propertyName="abcd">
-                <simple>${exchange.setProperty("SRC0001")}</simple>
-            </setProperty>
-            <setProperty propertyName="serviceName">
-                <simple>aliveee</simple>
-            </setProperty>
-
-            <!--<setBody>
-                <simple>${exchange.getProperty(inputData)}</simple>
-            </setBody>-->
-
-            <!--<setBody>
-                <simple> Service Request for Mobile Number Updation Generated </simple>
-            </setBody>-->
 
             <process ref="MobileNumUpdatation"/>
 
             <!--Calling Log API -->
             <convertBodyTo type="java.lang.String"/>
-
-            <!--<setHeader headerName="CamelHttpResponseCode">
-               <simple>1005</simple>
-           </setHeader>-->
 
             <log loggingLevel="INFO" message="Output Payload,  Body : ${body}, Headers : ${headers}"/>
             <log loggingLevel="INFO" message="After calling Data Mapping Processor, Reached End of Xangars.xml"/>
@@ -293,8 +262,6 @@
 
             <log loggingLevel="INFO" message="Body : ${body} \r\n Headers : ${headers}"/>
 
-
-
             <setProperty propertyName="inputData">
                 <simple>${body}</simple>
             </setProperty>
@@ -307,39 +274,16 @@
                 </when>
             </choice>
 
-            <setProperty propertyName="abcd">
-                <simple>${exchange.setProperty("SRC0001")}</simple>
-            </setProperty>
-            <setProperty propertyName="serviceName">
-                <simple>aliveee</simple>
-            </setProperty>
-
-            <!--<setBody>
-                <simple>${exchange.getProperty(inputData)}</simple>
-            </setBody>-->
-
-            <!--<setBody>
-                <simple> Service Request for Mobile Number Updation Generated </simple>
-            </setBody>-->
-
             <process ref="EmailAdressUpdatation"/>
 
             <!--Calling Log API -->
             <convertBodyTo type="java.lang.String"/>
-
-            <!--<setHeader headerName="CamelHttpResponseCode">
-               <simple>1005</simple>
-           </setHeader>-->
-
             <log loggingLevel="INFO" message="Output Payload,  Body : ${body}, Headers : ${headers}"/>
             <log loggingLevel="INFO" message="After calling Data Mapping Processor, Reached End of Xangars.xml"/>
             <stop/>
         </route>
 
         <!-- calling PAN Card Updatation API-->
-
-
-
         <route  id="PanUpdatation" startupOrder="6">
         <from uri="direct:PanUpdatation"/>
         <convertBodyTo type="java.lang.String"/>
@@ -362,29 +306,11 @@
             </when>
         </choice>
 
-        <setProperty propertyName="abcd">
-            <simple>${exchange.setProperty("SRC0001")}</simple>
-        </setProperty>
-        <setProperty propertyName="serviceName">
-            <simple>aliveee</simple>
-        </setProperty>
-
-        <!--<setBody>
-            <simple>${exchange.getProperty(inputData)}</simple>
-        </setBody>-->
-
-        <!--<setBody>
-            <simple> Service Request for Mobile Number Updation Generated </simple>
-        </setBody>-->
 
         <process ref="PancardUpdatation"/>
 
         <!--Calling Log API -->
         <convertBodyTo type="java.lang.String"/>
-
-        <!--<setHeader headerName="CamelHttpResponseCode">
-           <simple>1005</simple>
-       </setHeader>-->
 
         <log loggingLevel="INFO" message="Output Payload,  Body : ${body}, Headers : ${headers}"/>
         <log loggingLevel="INFO" message="After calling Data Mapping Processor, Reached End of Xangars.xml"/>
@@ -392,7 +318,6 @@
     </route>
 
         <!-- calling Whatsapp opt in Step1 API-->
-
         <route  id="WhatsappoptStep1" startupOrder="7">
             <from uri="direct:WhatsappoptStep1"/>
             <convertBodyTo type="java.lang.String"/>
@@ -415,29 +340,10 @@
                 </when>
             </choice>
 
-            <setProperty propertyName="abcd">
-                <simple>${exchange.setProperty("SRC0001")}</simple>
-            </setProperty>
-            <setProperty propertyName="serviceName">
-                <simple>aliveee</simple>
-            </setProperty>
-
-            <!--<setBody>
-                <simple>${exchange.getProperty(inputData)}</simple>
-            </setBody>-->
-
-            <!--<setBody>
-                <simple> Service Request for Mobile Number Updation Generated </simple>
-            </setBody>-->
-
             <process ref="WhatsappoptStep1Details"/>
 
             <!--Calling Log API -->
             <convertBodyTo type="java.lang.String"/>
-
-            <!--<setHeader headerName="CamelHttpResponseCode">
-               <simple>1005</simple>
-           </setHeader>-->
 
             <log loggingLevel="INFO" message="Output Payload,  Body : ${body}, Headers : ${headers}"/>
             <log loggingLevel="INFO" message="After calling Data Mapping Processor, Reached End of Xangars.xml"/>
@@ -446,7 +352,6 @@
 
 
         <!-- calling Whatsapp opt in Step2 API-->
-
         <route  id="WhatsappoptStep2" startupOrder="8">
             <from uri="direct:WhatsappoptStep2"/>
             <convertBodyTo type="java.lang.String"/>
@@ -469,29 +374,14 @@
                 </when>
             </choice>
 
-            <setProperty propertyName="abcd">
-                <simple>${exchange.setProperty("SRC0001")}</simple>
-            </setProperty>
-            <setProperty propertyName="serviceName">
-                <simple>aliveee</simple>
-            </setProperty>
 
-            <!--<setBody>
-                <simple>${exchange.getProperty(inputData)}</simple>
-            </setBody>-->
 
-            <!--<setBody>
-                <simple> Service Request for Mobile Number Updation Generated </simple>
-            </setBody>-->
+
 
             <process ref="WhatsappoptStep2Details"/>
 
             <!--Calling Log API -->
             <convertBodyTo type="java.lang.String"/>
-
-            <!--<setHeader headerName="CamelHttpResponseCode">
-               <simple>1005</simple>
-           </setHeader>-->
 
             <log loggingLevel="INFO" message="Output Payload,  Body : ${body}, Headers : ${headers}"/>
             <log loggingLevel="INFO" message="After calling Data Mapping Processor, Reached End of Xangars.xml"/>
@@ -499,310 +389,17 @@
         </route>
 
 
-        <route id="LoginDataRoute">
-            <from uri="direct:getLoginData"/>
-
-            <!--Spawing a new Process/thread-->
-            <!--<wireTap uri="direct:LogMessage" />-->
-            <setBody>
-                <simple></simple>
-                <log message="p1"/>
-            </setBody>
-
-            <removeHeaders pattern="*"/>
-            <setProperty propertyName="BasicAuth">
-                <simple>Basic {{env:BASIC_AUTH}}</simple>
-            </setProperty>
-            <setHeader headerName="Authorization">
-                <simple>${exchange.getProperty(BasicAuth)}</simple>
-            </setHeader>
-            <setHeader headerName="Exchange.HTTP_METHOD">
-                <constant>GET</constant>
-            </setHeader>
-
-            <log loggingLevel="INFO" message="Going to  ODP login BASIC AUTH is ${exchange.getProperty(BasicAuth)}!!"/>
-            <log loggingLevel="INFO" message="Value of Authorization set to ${in.headers.Authorization} !!"/>
-            <!--hiiting the ODP server to get the Access token in header part-->
-            <doTry>
-                <!--<toD uri="https://b2b.demo.capiot.com/api/a/rbac/login?throwExceptionOnFailure=false&amp;httpClient.soTimeout=5000&amp;httpClientConfigurer=selfSigned"/>-->
-
-                <!--URI for Local -->
-                <!--<toD uri="http://13.233.99.61:31005/odplogin?throwExceptionOnFailure=false&amp;httpClient.soTimeout=5000&amp;httpClientConfigurer=selfSigned"/>-->
-
-                <!--URI for Server -->
-                <toD uri="{{env:ODP_LOGIN_SERV_URL}}?throwExceptionOnFailure=false&amp;httpClient.soTimeout=5000&amp;httpClientConfigurer=selfSigned"/>
-
-
-                <!--NOTE :  DOnt Access Body here to avoid getting consumed -->
-                <!--Inportant Step because camel body is inputstream format once used it will be destroyed/null
-                but string makes it  persistent -->
-                <doCatch>
-                    <!--if below exception-->
-                    <exception>java.net.ConnectException</exception>
-                    <!--  <wireTap uri="direct:LogMessage" />-->
-                    <setHeader headerName="CamelHttpResponseCode">
-                        <simple>500</simple>
-                    </setHeader>
-                    <setBody>
-                        <simple>{"errorCode":"ERR001","message" :"Error connecting to ODP"}</simple>
-                        <log message="p1"/>
-                    </setBody>
-                    <log loggingLevel="INFO" message="Error while connecting to ODP Body : ${body}"/>
-                    <stop/>
-                </doCatch>
-                <doCatch>
-                    <exception>org.apache.camel.http.common.HttpOperationFailedException</exception>
-                    <setHeader headerName="CamelHttpResponseCode">
-                        <simple>404</simple>
-                    </setHeader>
-                    <setBody>
-                        <simple>{"errorCode":"ERR002","Status" :"Internal ODP Error"}</simple>
-                        <log message="p2"/>
-                    </setBody>
-                    <log loggingLevel="INFO" message="Error while connecting to ODP Body : ${body}"/>
-                    <stop/>
-                </doCatch>
-                <doCatch>
-                    <exception>java.net.SocketTimeoutException</exception>
-                    <setHeader headerName="CamelHttpResponseCode">
-                        <simple>500</simple>
-                    </setHeader>
-                    <setBody>
-                        <simple>{"errorCode":"ERR003", "Status" :"Error connecting to ODP"}</simple>
-                        <log message="p3"/>
-                    </setBody>
-                    <log loggingLevel="INFO" message="Error while connecting to ODP Body: ${body}"/>
-                    <stop/>
-                </doCatch>
-            </doTry>
-            <!--Inportant Step because camel body is inputstream format once used it will be destroyed/null
-            but string makes it  persistent -->
-            <convertBodyTo type="java.lang.String"/>
-            <log message="########### Successfully made http request to {{env:ODP_LOGIN_SERV_URL}}, Body is ${body}"/>
-            <log message="########### Recieved Header ${headers}"/>
-            <choice>
-                <when>
-                    <!--if Successful login-->
-                    <simple>${in.headers.CamelHttpResponseCode} == 200</simple>
-                    <setProperty propertyName="ODPToken">
-                        <!--Since we got token in the Header part as the value of AccessToken key-->
-                        <simple>${in.headers.AccessToken}</simple>
-                    </setProperty>
-                    <!--<Success Log/>-->
-
-                    <log loggingLevel="INFO" message=" Received 200 Response Code After Successful ODP Login, Received Token is : ${exchange.getProperty(ODPToken)} "/>
-
-                </when>
-                <otherwise>
-                    <!--<Error Log/>-->
-                    <setBody>
-                        <simple>{"errorCode":"ERR004","message": " Unknown Error Occurred while ODP Login"}</simple>
-                    </setBody>
-                    <log loggingLevel="INFO" message="Unknown Response Code = ${in.headers.CamelHttpResponseCode}(Not Equal 200) while  connecting to ODP login API"/>
-                    <stop/>
-                </otherwise>
-            </choice>
-
-        </route>
-
-
-        <route id="logRoute">
-            <from uri="direct:log"/>
-            <process ref="LogMessage"/>
-
-            <removeHeaders pattern="*"/>
-            <setHeader headerName="Exchange.HTTP_METHOD">
-                <constant>POST</constant>
-            </setHeader>
-            <setHeader headerName="Exchange.CONTENT_TYPE">
-                <constant>application/json</constant>
-            </setHeader>
-            <setHeader headerName="Authorization">
-                <simple>Basic {{env:BASIC_AUTH}}</simple>
-            </setHeader>
-            <!--<log message="@@@@@@@@@@@@@@@@@@@@@@@ Log URL: {{env:LOGMESSAGE_URL}}?throwExceptionOnFailure=false&amp;httpClient.soTimeout={{env:HTTP_TIMEOUT_MILISECONDS}}&amp;httpClientConfigurer=selfSigned"/>
-            <log message="@@@@@@@@@@@@@@@@@@@@@@@ Log Body: ${body}"/>-->
-            <doTry>
-                <to uri="{{env:LOGMESSAGE_URL}}?throwExceptionOnFailure=false&amp;httpClient.soTimeout={{env:HTTP_TIMEOUT_MILISECONDS}}&amp;httpClientConfigurer=selfSigned"/>
-                <doCatch>
-                    <exception>java.lang.Exception</exception>
-                    <exception>java.net.SocketTimeoutException</exception>
-                    <exception>java.net.ConnectException</exception>
-
-                    <log loggingLevel="ERROR" message="@@@@@@@@@@@@@@ Could not push Logs to ODP."/>
-                    <log loggingLevel="ERROR" message="##### Exception is ${in.headers.CamelExceptionCaught}"/>
-                </doCatch>
-            </doTry>
-        </route>
-
-
-        <route id="sendEmail">
-            <from uri="direct:sendEmail"/>
-            <removeHeaders pattern="*"/>
-            <setProperty propertyName="BasicAuth">
-                <simple>Basic {{env:BASIC_AUTH}}</simple>
-            </setProperty>
-            <setHeader headerName="Authorization">
-                <simple>${exchange.getProperty(BasicAuth)}</simple>
-            </setHeader>
-            <setHeader headerName="Exchange.HTTP_METHOD">
-                <constant>POST</constant>
-            </setHeader>
-
-            <log loggingLevel="INFO" message="Going to Call Email Service BASIC AUTH ${exchange.getProperty(BasicAuth)}!!"/>
-            <log loggingLevel="INFO" message="Going to Call Email Service, Header is ${in.headers.Authorization} !!"/>
-
-            <log loggingLevel="INFO" message=" Notification Template ID set to : ${exchange.getProperty(NotTempId)} "/>
-
-            <setBody>
-                <!--<simple>{"templateID":"{{VALIDATION_ERROR_TEMPLATE}}","placeholderData":[{"Error":"${exchange.getProperty(error)}","TransactionRefNo":"${exchange.getProperty(txnRefNo)}","FileName":"${exchange.getProperty(fileName)}","BeneID":"${exchange.getProperty(beneID)}","CorporateCode":"${exchange.getProperty(corporateCode)}","Product":"${exchange.getProperty(product)}","TrackingID":"${exchange.getProperty(trackingId)}"}]}</simple>-->
-                <simple>
-                    {
-                    "templateID":"${exchange.getProperty(NotTempId)}",
-                    "placeholderData":
-                    [ { "key" : "Error",
-                    "value" : "${exchange.getProperty(ErrorMessage)}" },
-                    { "key" : "FileName",
-                    "value" : "${exchange.getProperty(fileName)}" }
-                    ],
-                    "toEmail" : ${exchange.getProperty(Debtor_Email)}
-                    }
-                </simple>
-            </setBody>
-            <convertBodyTo type="java.lang.String"/>
-            <log loggingLevel="INFO" message="Email body formed is: ${body}"/>
-            <!--<to uri="activemq:queue:{{EMAIL_QUEUE}}"/>-->
-
-            <!--<toD uri="{{env:ODP_LOGIN_SERV_URL}}?throwExceptionOnFailure=false&amp;httpClient.soTimeout=5000&amp;httpClientConfigurer=selfSigned"/>-->
-            <doTry>
-
-                <toD uri="{{env:SEND_EMAIL_URL}}?throwExceptionOnFailure=false&amp;httpClient.soTimeout={{env:HTTP_TIMEOUT_MILISECONDS}}&amp;httpClientConfigurer=selfSigned"/>
-                <doCatch>
-                    <!--if below exception-->
-                    <exception>java.net.ConnectException</exception>
-                    <setHeader headerName="CamelHttpResponseCode">
-                        <simple>500</simple>
-                    </setHeader>
-                    <setBody>
-                        <simple>{"errorCode":"ERR001","message" :"Error connecting to Send_Email Service"}</simple>
-                        <log message="p1"/>
-                    </setBody>
-                    <log loggingLevel="INFO" message="Error while connecting to Email Service Body : ${body}"/>
-                    <stop/>
-                </doCatch>
-                <doCatch>
-                    <exception>org.apache.camel.http.common.HttpOperationFailedException</exception>
-                    <setHeader headerName="CamelHttpResponseCode">
-                        <simple>404</simple>
-                    </setHeader>
-                    <setBody>
-                        <simple>{"errorCode":"ERR002","Status" :"Internal Email Service Error"}</simple>
-                        <log message="p2"/>
-                    </setBody>
-                    <log loggingLevel="INFO" message="Error while connecting to Email Service Body : ${body}"/>
-                    <stop/>
-                </doCatch>
-            </doTry>
-            <convertBodyTo type="java.lang.String"/>
-            <log message="########### SuccessFully sent Email through ID  ${exchange.getProperty(NotTempId)}"/>
-            <log message="########### Received http Response code  ${in.headers.CamelHttpResponseCode}"/>
-        </route>
 
 
 
-        <route id="PaymentDataRoute">
-            <from uri="direct:getPaymentData"/>
-
-            <convertBodyTo type="java.lang.String"/>
-            <!--<setProperty propertyName="PaymentData">-->
-            <!--<simple>${body}</simple>-->
-            <!--</setProperty>-->
-
-            <!-- Login Route is called to get token as  an output-->
-            <!--<to uri="direct:getLoginData"/>-->
-            <!--TO reset the body with Payment Data for further use -->
-            <log loggingLevel="INFO" message=" finally Going to push Payment Records in PaymentLog"/>
-            <choice>
-                <when>
-                <simple>${exchange.getProperty(isFileFormatValid)} == "false" </simple>
-                <log loggingLevel="INFO" message=" Pushing Records for Incorrect File Format"/>
-                    <setBody>
-                        <simple>${exchange.getProperty(incorrectFileFormatData)}</simple>
-                    </setBody>
-                </when>
-                <when>
-                    <simple>${exchange.getProperty(isExtensionValid)} == "false" </simple>
-                    <log loggingLevel="INFO" message=" Pushing Records for Incorrect File Extension"/>
-                    <setBody>
-                        <simple>${exchange.getProperty(incorrectExtensionData)}</simple>
-                    </setBody>
-                </when>
-            </choice>
-
-            <removeHeaders pattern="*"/>
-            <setHeader headerName="Exchange.HTTP_METHOD">
-                <simple>POST</simple>
-            </setHeader>
-            <setHeader headerName="Exchange.CONTENT_TYPE">
-                <simple>application/json</simple>
-            </setHeader>
-            <setHeader headerName="Authorization">
-                <simple>${exchange.getProperty(ODPToken)}</simple>
-            </setHeader>
-
-            <log loggingLevel="INFO" message="body before push request  is ${body}"/>
-            <log loggingLevel="INFO" message=" header before push request is ${headers}"/>
-
-            <doTry>
-                <toD uri="{{env:ODP_URL_PAYMENTLOG}}?throwExceptionOnFailure=false&amp;httpClient.soTimeout={{env:HTTP_TIMEOUT_MILISECONDS}}&amp;httpClientConfigurer=selfSigned"/>
-                <!--<toD uri="https://13.233.99.61:32001/api/c/test/payment?throwExceptionOnFailure=false&amp;httpClient.soTimeout=10000&amp;httpClientConfigurer=selfSigned"/>-->
-
-                <convertBodyTo type="java.lang.String"/>
-                <log loggingLevel="INFO" message="####### Headers  Recieved after push request : ${headers}"/>
-                <log message="Body Received after Push Request: ${body}" />
-                <doCatch>
-                    <exception>java.net.SocketTimeoutException</exception>
-                    <exception>java.net.ConnectException</exception>
-                    <exception>org.apache.camel.http.common.HttpOperationFailedException</exception>
-                    <log loggingLevel="ERROR" message="########## Exception occurred"/>
-                    <log loggingLevel="ERROR" message="########## ${in.headers.CamelExceptionCaught}"/>
-                    <!--==================Logging Req Start====================-->
-                    <setProperty propertyName="LogMessage">
-                        <simple>Exception Occurred in push Data Call to PaymentLog</simple>
-                    </setProperty>
-                    <setProperty propertyName="converstnId">
-                        <simple>${exchange.getProperty(fileName)}</simple>
-                    </setProperty>
-                    <setProperty propertyName="serviceName">
-                        <simple>GenericValidation</simple>
-                    </setProperty>
-                    <setProperty propertyName="LogType">
-                        <simple>ERROR</simple>
-                    </setProperty>
-                    <wireTap uri="direct:log"/>
-                    <!--==================Logging Req End=======================-->
-                </doCatch>
-            </doTry>
 
 
-            <setProperty propertyName="ResponseCode">
-                <simple>${in.headers.CamelHttpResponseCode}</simple>
-            </setProperty>
 
 
-            <choice>
-                <when>
-                    <simple>${in.headers.CamelHttpResponseCode} == 200</simple>
-                    <log message="Data pushed to PaymentLog SucessFully, Response code from ODP : ${exchange.getProperty(ResponseCode)}"/>
-                </when>
-                <otherwise>
-                    <log loggingLevel="ERROR" message="########## Error Posting Data To ODP"/>
-                    <!--<log loggingLevel="ERROR" message="########## Stopping file processing"/>-->
-                    <!--<stop/>-->
-                </otherwise>
-            </choice>
-            <log loggingLevel="ERROR" message="########## Route to Push Data to Payment Log ended"/>
-        </route>
+
+
+
+
 
     </camelContext>
 

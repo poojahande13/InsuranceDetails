@@ -21,28 +21,9 @@ import java.util.TimeZone;
 public class WhatsappoptinStep1 implements Processor {
 
 
-    static String  POLICY_NUMBER = "policyNumber";
-    static String CUSTOMER_ID =    "customerID";
-    static String CUSTOMER_NAME  = "customerName"   ;
-    static String INSURED_NAME   = "insuredName"   ;
-    static String PRODUCT_END_DATE = "productEndDate" ;
-    static String DOB = "dob"     ;
-    static String  EMAIL_ADDRESS = "emailAddress"   ;
+
     static String MOBILE_NUMBER  = "mobileNumber"   ;
-    static String PREMIUM_MODE   =  "premiumMode"  ;
-    static String POLICY_STATUS  =  "policyStatus"  ;
-    static String CUSTOMER_PAN_NO=  "customerPanNo"  ;
-    static String POLICY_ISSUANCE_DATE = "policyIssuranceDate" ;
-    static String CONTACT_NUMBER_LAST_UPDATED = "contactNumberLastUpdated";
-    static String EMAIL_ADDRESS_LAST_UPDATED = "emailAddressLastUpdated" ;
-    static String WHATSAPP_OPT_IN_STATUS   = "whatsappOptInStatus"  ;
-    static String PRODUCT_NAME    = "productName"           ;
-    static String PRODUCT_ID = "productId"              ;
-    static String REINVEST_APPLICABLE   = "reinvestApplicable"     ;
-    static String OUTSTANDING_PAYOUT    = "outstandingPayout"   ;
-    static String UNCLAIMED_AMOUNT      = "unclaimedAmount"  ;
-    static String NEFT_REGISTERED       = "neftRegistered" ;
-    static String LAST_PREMIUM_PAID     = "lastPremiumPaid"    ;
+
 
 
 
@@ -123,8 +104,6 @@ public class WhatsappoptinStep1 implements Processor {
                             System.out.println("Mobile Number found in  Policy_table");
                         }
                         if(recordFound_1) {
-                            // write logic  to send  otp and  insert a record in table 4 with expriry tome of OTP.
-
 
                             String OTP = GenerateOTP.generateOTP(GenerateOTP.OTP_LENGTH);
                             //stmt=con.createStatement();

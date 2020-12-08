@@ -123,7 +123,8 @@ public class EmailAddressUpdation implements Processor {
                         }else {
 
                             newRequestForEmail.generateRequestId();
-                            newRequestForEmail.setMessage("Service Request for Emai Address Updation Generated");
+                            newRequestForEmail.setMessage("Service Request for Email Address Updation Generated");
+                            newRequestForEmail.setStatus(1004);
 
 
                             con= DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","Admin","admin1234");
@@ -149,15 +150,15 @@ public class EmailAddressUpdation implements Processor {
                 System.out.println(Emailupdatedetails.toString());
             }
             String newRequestForEmailUpdate = null;
-            //System.out.println(ListOfPaymentPOJO);
+
 
             newRequestForEmailUpdate = gson.toJson(newRequestForEmail);
 
-            System.out.println("\nfinal Paymenet CDM JSON Body " + newRequestForEmailUpdate);
+            System.out.println("\nfinal newRequestForEmailUpdate JSON Body " + newRequestForEmailUpdate);
             exchange.getIn().setBody(newRequestForEmailUpdate);
         }
         catch (Exception e ) {
-            System.out.println("Error Occured in InputFileParser.java file... Unsucessful termination");
+            System.out.println("Error Occured in EmailAddressUpdation.java file... Unsucessful termination");
             e.printStackTrace();
         }
 

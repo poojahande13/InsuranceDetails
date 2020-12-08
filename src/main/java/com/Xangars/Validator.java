@@ -9,6 +9,7 @@ public class Validator {
 
     public static boolean validateMobileNumber(String s)
     {
+        if (s == null) return false;
         Pattern p = Pattern.compile("[0-9]{10}");
         Matcher m = p.matcher(s);
         return (m.find() && m.group().equals(s));

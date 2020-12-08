@@ -68,10 +68,6 @@ public class MobileNumberUpdation implements Processor {
 
             PolicyTable mobileUpdatedetails = new PolicyTable();
             ChangeRequest newRequest = new ChangeRequest();
-//            System.out.println("getting todays Date");
-//            String DateOfInitiation = getDate();
-
-
 
             for(int i = 0; i<jsonarr.size();i++) {
                 String newMobileNumber = "";
@@ -109,7 +105,7 @@ public class MobileNumberUpdation implements Processor {
 
                     if (recordFound){
                         if(newMobileNumber.equals(mobileUpdatedetails.getMOBILE_NUMBER())) {
-                            newRequest.setMessage("Mobile number already exists");
+                            newRequest.setMessage("Mobile number already exists in Database");
 
                         }else {
 
@@ -121,12 +117,8 @@ public class MobileNumberUpdation implements Processor {
                             //newRequest.setProcessed("N");
                             newRequest.setMessage("Service Request for Mobile Number Updation Generated");
                             newRequest.setStatus(1004);
-
-
-
                             con= DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","Admin","admin1234");
                             stmt=con.createStatement();
-
 
                             String insertQuery = "INSERT INTO LOG_TABLE(RequestNumber,policyNumber,newValue) VALUES('"+
                                     newRequest.getrequestId() + "' ," + mobileUpdatedetails.getPOLICY_NUMBER() + ",'" + newMobileNumber + "')";
@@ -154,11 +146,11 @@ public class MobileNumberUpdation implements Processor {
 
             newRequestForMobile = gson.toJson(newRequest);
 
-            System.out.println("\nfinal New Request For Email  JSON Body " + newRequestForMobile);
+            System.out.println("\nfinal New Request For Mobile JSON Body " + newRequestForMobile);
             exchange.getIn().setBody(newRequestForMobile);
         }
         catch (Exception e ) {
-            System.out.println("Error Occured in InputFileParser.java file... Unsucessful termination");
+            System.out.println("Error Occured in MobileNumberUpdatation.java file... Unsucessful termination");
             e.printStackTrace();
         }
 

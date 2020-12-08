@@ -95,7 +95,10 @@ public class CustomerPolicyInfo implements Processor {
                     System.out.println("Query is " + query);
                     ResultSet rs=stmt.executeQuery(query);
 
+                    boolean recordFound = false;
+
                     while(rs.next())  {
+                        recordFound= true;
                         System.out.println(rs.getInt(1) + rs.getString(2) + " " +rs.getString(3)+" "+rs.getString(4));
                         policydetails.setCUSTOMER_ID(rs.getString("CUSTOMER_ID"));
                         policydetails.setCUSTOMER_NAME(rs.getString("CUSTOMER_NAME"));
@@ -124,13 +127,19 @@ public class CustomerPolicyInfo implements Processor {
                         policydetails.setLAST_PREMIUM_PAID(rs.getString("LAST_PREMIUM_PAID"));
 
 
+                    }
+                    if (recordFound){
 
+                     policydetails.setMESSAGE("Policy Number Found In Insuarance Database");
+                     policydetails.setStatus(1006);
 
+                    }else{
 
-                        // set al the remaining feiids similarly.
+                        policydetails.setMESSAGE("Policy Number Not Found IN Insuarance Database");
+                        policydetails.setStatus(404);
+
                     }
 
-                    System.out.println("in a while loop ");
                     con.close();
 
                 }catch(Exception e)
@@ -144,11 +153,11 @@ public class CustomerPolicyInfo implements Processor {
 
             policystr = gson.toJson(policydetails);
 
-            System.out.println("\nfinal Paymenet CDM JSON Body " + policystr);
+            System.out.println("\nfinal policystr JSON Body " + policystr);
             exchange.getIn().setBody(policystr);
         }
         catch (Exception e ) {
-            System.out.println("Error Occured in InputFileParser.java file... Unsucessful termination");
+            System.out.println("Error Occured in CustomerPolicyInfo.java file... Unsucessful termination");
             e.printStackTrace();
         }
 

@@ -76,59 +76,60 @@ public class EmailValidation implements Processor {
                 JSONObject jobj = (JSONObject)jsonarr.get(i);
                 System.out.println(jobj);
 
+                if (jobj.get(EmailValidation.DOB)!= null) {
+                    Emaildetails.setDOB(jobj.get(EmailValidation.DOB).toString());
+                }
 
                 if(jobj.get(EmailValidation.EMAIL_ADDRESS) != null)  {
-
                     Emaildetails.setEMAIL_ADDRESS(jobj.get(EmailValidation.EMAIL_ADDRESS).toString());
 
-
                 }
-
-                if (jobj.get(EmailValidation.DOB)!= null) {
-
-                    Emaildetails.setDOB(jobj.get(EmailValidation.DOB).toString());
-
+                if(!Validator.validateEmailAddress(Emaildetails.getEMAIL_ADDRESS())) {
+                    Emaildetails.setMESSAGE("Email Address You entered is not valid");
                 }
-
-
-                try{
-                    Class.forName("oracle.jdbc.driver.OracleDriver");
-                    Connection con= DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","Admin","admin1234");
-                    Statement stmt=con.createStatement();
-                   // String query = "Select * from Policy_Table  where EMAIL_ADDRESS = " + Emaildetails.getEMAIL_ADDRESS() + "AND DOB = "+ Emaildetails.getDOB();
-                   String query= " Select Email_Address from Policy_Table  where Email_Address = '" + Emaildetails.getEMAIL_ADDRESS() + "' AND DOB =TO_DATE('" +Emaildetails.getDOB() + "', 'DD-MM-YYYY')";
-                    System.out.println("Query is " + query);
-                    ResultSet rs=stmt.executeQuery(query);
-                    boolean recordFound = false;
-                    while(rs.next())  {
-                        //System.out.println(rs.getInt(1) + rs.getString(2) + " " +rs.getString(3)+" "+rs.getString(4));
-                        recordFound=true;
-                        Emaildetails.setEMAIL_ADDRESS(rs.getString("EMAIL_ADDRESS"));
-                        // set al the remaining feiids similarly.
+                else {
+                    try{
+                        Class.forName("oracle.jdbc.driver.OracleDriver");
+                        Connection con= DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","Admin","admin1234");
+                        Statement stmt=con.createStatement();
+                        // String query = "Select * from Policy_Table  where EMAIL_ADDRESS = " + Emaildetails.getEMAIL_ADDRESS() + "AND DOB = "+ Emaildetails.getDOB();
+                        String query= " Select Email_Address from Policy_Table  where Email_Address = '" + Emaildetails.getEMAIL_ADDRESS() + "' AND DOB =TO_DATE('" +Emaildetails.getDOB() + "', 'DD-MM-YYYY')";
+                        System.out.println("Query is " + query);
+                        ResultSet rs=stmt.executeQuery(query);
+                        boolean recordFound = false;
+                        while(rs.next())  {
+                            //System.out.println(rs.getInt(1) + rs.getString(2) + " " +rs.getString(3)+" "+rs.getString(4));
+                            recordFound=true;
+                            Emaildetails.setEMAIL_ADDRESS(rs.getString("EMAIL_ADDRESS"));
+                            // set al the remaining feiids similarly.
+                        }
+                        if (recordFound){
+                            Emaildetails.setMESSAGE("Email Address Sucessfully Validated");
+                            Emaildetails.setStatus(1005);
+                        } else {
+                            Emaildetails.setMESSAGE("Incorrect Email Address OR  DOB provided/Not Present in Database");
+                        }
+                        con.close();
+                    }catch(Exception e)
+                    {
+                        System.out.println(e);
                     }
-                    if (recordFound){
-                        Emaildetails.setMESSAGE("Email Address Sucessfully Validated");
-                        Emailvalidation.setStatus(1005);
-                    } else {
-                        Emaildetails.setMESSAGE("Incorrect Email Address OR  DOB provided");
-                    }
-                    con.close();
-                }catch(Exception e)
-                {
-                    System.out.println(e);
+
                 }
+
+
                 //System.out.println(Emaildetails.toString());
             }
-            String policystr = null;
+            String EmailValidationstr = null;
             //System.out.println(ListOfPaymentPOJO);
 
-            policystr = gson.toJson(Emaildetails);
+            EmailValidationstr = gson.toJson(Emaildetails);
 
-            System.out.println("\nfinal  JSON Body " + policystr);
-            exchange.getIn().setBody(policystr);
+            System.out.println("\nfinal EmailValidationstr JSON Body " + EmailValidationstr);
+            exchange.getIn().setBody(EmailValidationstr);
         }
         catch (Exception e ) {
-            System.out.println("Error Occured in InputFileParser.java file... Unsucessful termination");
+            System.out.println("Error Occured in EmailValidation.java file... Unsucessful termination");
             e.printStackTrace();
         }
 
